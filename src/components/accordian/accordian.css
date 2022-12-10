@@ -1,0 +1,190 @@
+.accordian_button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add_question_top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.question {
+  box-sizing: border-box;
+  margin-top: 10px;
+
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+
+  font-size: 15px;
+
+  font-weight: 400;
+
+  flex: 1;
+
+  line-height: 40px;
+
+  width: 40%;
+
+  border: none;
+
+  outline: none;
+
+  color: black;
+
+  height: 40px;
+
+  margin-right: 10px;
+
+  line-height: 10px;
+  padding: 10px;
+}
+
+.question:focus {
+  /* border-bottom:1px solid rgb(103, 58, 183); */
+
+  background-color: #f4f4f9;
+}
+
+
+.select{
+
+height: 2rem;
+
+width: 10rem;
+
+border:0.5px solid;
+
+padding:5px 15px; color: black;
+
+margin-left:10px;
+
+margin-right:10px;
+
+outline: none;
+/* border:1.5px solid #f4f4f9; */
+
+border-radius: 3px;
+
+background: transparent;}
+
+.add_question_body{
+
+display: flex; align-items: center; justify-content: flex-start;}
+
+.text_input{
+
+outline:none;
+
+border:none;
+
+height:2rem;
+
+width:100%;
+
+font-family: Roboto, Arial, sans-serif; font-weight: 400;
+
+font-size: 13px;
+
+letter-spacing: .2px;
+
+color: #202124;}
+
+.question_form_top {
+  background-color: white;
+  border-top: 8px solid rgb(132, 132, 133);
+
+  border-radius: 8px;
+
+  padding: 30px 25px;
+
+  text-transform: capitalize;
+}
+
+.question_form_top_name {
+  box-sizing: border-box;
+
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+
+  font-size: 32px;
+  font-weight: 400;
+
+  line-height: 40px;
+  line-height: 135%;
+
+  width: 100%;
+
+  border: none;
+
+  outline: none;
+
+  border-bottom: 1px solid #f4f4f9;
+  color: black;
+
+  height: 35px;
+}
+
+.question_form_top_desc {
+  box-sizing: border-box;
+
+  margin-top: 10px;
+
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+
+  font-size: 13px;
+
+  font-weight: 400;
+  line-height: 40px;
+
+  width: 100%;
+
+  border: none;
+
+  outline: none;
+
+  border-bottom: 1px solid #f4f4f9;
+
+  color: black;
+
+  height: 20px;
+}
+
+.question_form {
+  background-color: #f4f4f9;
+  height: 100vh;
+  padding-bottom: 30px;
+}
+
+.section {
+  margin: auto;
+  margin-top: 1rem;
+  width: 80%;
+}
+
+.question_edit{
+
+background-color:#F4F4F9;
+
+display: flex;
+
+flex-direction: column;
+
+margin-right:12px;
+
+margin-top: 10px;
+
+margin-bottom: 0; padding:1px;
+
+border-radius: 3px;
+position: relative;
+bottom: 2.5rem;
+right: -1.5rem;
+width:35px;
+float:  right;
+}
+
+
+.edit{
+
+color:#5f6368; padding:8px 5px; }

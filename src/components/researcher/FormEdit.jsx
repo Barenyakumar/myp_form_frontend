@@ -103,15 +103,15 @@ export default function FormEdit() {
       <hr />
 
       {questions.map((question, i) => (
-        <>
+        <div key={i}>
           <Accordian
             question={question}
             index={i}
-            key={i}
+            
             questionCallback={questionCallback}
           />
           
-        </>
+        </div>
       ))}
       <Button variant="outlined" onClick={newQuestionFunc}>
         Add Question

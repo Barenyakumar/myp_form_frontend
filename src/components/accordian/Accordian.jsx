@@ -10,8 +10,9 @@ import MuiAccordion from "@mui/material/Accordion"
 import MuiAccordionSummary from "@mui/material/AccordionSummary"
 import MuiAccordionDetails from "@mui/material/AccordionDetails"
 import Typography from "@mui/material/Typography"
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import ShortTextIcon from "@mui/icons-material/ShortText"
-import { Button, IconButton, MenuItem, Select, Switch } from "@mui/material"
+import { Button, IconButton, MenuItem, Select, Switch, Tooltip } from "@mui/material"
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -62,22 +63,36 @@ export default function Accordian(props) {
     setExpanded(newExpanded ? panel : false)
   }
 
-  function removeOption(j) {
-    if (options.length > 1) {
-      setOptions([])
-      options.forEach((opt, i) => {
-        if (i !== j) setOptions((prev) => [...prev, opt])
-      })
-      //  setQuestions(removeOptionQuestions)
-    }
-  }
+ async function removeOption(j) {
+   if (options.length > 1) {
+     const ops = [...options]
+     setOptions(prev => {
+       ops.splice(j, 1)
+       prev = [...ops]
+       return prev;
+     })
+     setQuestion((prev) => {
+       prev.options = options
+       prev.answer = answer
+       prev.isPrimary = isPrimary
+       return prev
+     })
+      props.questionCallback(props.index, question)
+     //  setQuestions(removeOptionQuestions)
+   }
+ }
 
   function addOption() {
     if (options.length < 5) {
       const newOption = { optionText: " Option " + (options.length + 1) }
       setOptions((prev) => [...prev, newOption])
+      setQuestion((prev) => {
+        prev.options = [...options]
+        return prev
+      })
+      props.questionCallback(props.index, question)
     } else {
-      //console.log("Max 5 questions ")
+      console.log("Max 5 questions ")
     }
     // this.forceUpdate();
     //  setQuestions(optionsOfQuestion)
@@ -126,11 +141,10 @@ export default function Accordian(props) {
     setIsPrimary(event.target.checked)
   }
 
-  useEffect(() => {
-    setInterval(() => {
-      questionSubmit()
-    }, 1000);
-  }, [])
+  // useEffect(() => {
+  //     questionSubmit()
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [props.questionTrigger])
   
 
   return (
@@ -156,6 +170,7 @@ export default function Accordian(props) {
                     prev.questionText = e.target.value
                     return prev
                   })
+                  props.questionCallback(props.index, question)
                 }}
                 required
               />
@@ -205,6 +220,20 @@ export default function Accordian(props) {
                   Short Answer
                 </MenuItem>
               </Select>
+              <div className="question_edit">
+                <AddCircleOutline
+                  className="edit"
+                  onClick={props.addQuestionCallback}
+                />
+                <DeleteOutlinedIcon
+                  className="edit"
+                  onClick={() => {
+                    props.deleteQuestionCallback(props.index)
+                  }}
+                />
+                {/* <CropOriginalOutlined className="edit" />
+              <TextFieldsOutlined className="edit" /> */}
+              </div>
             </div>
 
             <div className="question_options">
@@ -228,16 +257,17 @@ export default function Accordian(props) {
                           className="text_input"
                           placeholder={option.optionText}
                           required
-                          onChange={(e) =>
-                            // setQuestion((prev) => {
-                            //   //console.log(prev)
-                            //   prev.options[j].optionText = e.target.value
-                            //   return prev
-                            // })
+                          onChange={(e) => {
                             setOptions((prev) => {
                               prev[j].optionText = e.target.value
                               return prev
                             })
+                            setQuestion((prev) => {
+                              prev.options = [...options]
+                              return prev
+                            })
+                            props.questionCallback(props.index, question)
+                          }
                           }
                         />
                       </div>
@@ -282,27 +312,21 @@ export default function Accordian(props) {
                 </div>
               ))}
             </div>
-            <span>Primary</span>
-            <Switch
-              // ref={questionAnswer}
-              name="checkedA"
-              color="primary"
-              checked={isPrimary}
-              inputProps={{ "aria-label": "controlled" }}
-              onChange={(e) => {
-                changePrimary(e)
-              }}
-            />
-            <div className="question_edit">
-              <AddCircleOutline
-                className="edit"
-                onClick={props.addQuestionCallback}
+            <div className="primary-container">
+              <span>Primary</span>
+              <Switch
+                // ref={questionAnswer}
+                name="checkedA"
+                color="primary"
+                checked={isPrimary}
+                inputProps={{ "aria-label": "controlled" }}
+                onChange={(e) => {
+                  changePrimary(e)
+                }}
               />
-              <DeleteOutlinedIcon className="edit" onClick={() => {
-                props.deleteQuestionCallback(props.index)
-              } } />
-              {/* <CropOriginalOutlined className="edit" />
-              <TextFieldsOutlined className="edit" /> */}
+              <Tooltip title="Add" placement="top">
+                <InfoOutlinedIcon />
+              </Tooltip>
             </div>
           </AccordionDetails>
         </form>

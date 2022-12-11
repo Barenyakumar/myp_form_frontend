@@ -15,12 +15,13 @@ export default function FormEdit() {
   const [researcherName, setResearcherName] = useState("")
   const [formLink, setFormLink] = useState("")
   const [alertOpen, setAlertOpen] = useState(false)
+  const [questionTrigger, setQuestionTrigger] = useState(false)
   const [questions, setQuestions] = useState([
     {
       questionText: "Question 1",
       questionType: "radio",
       options: [
-        { optionText: "option 1" },
+        { optionText: "Option 1" },
         // { optionText: "bad", optionImage: "" },
         // { optionText: "help", optionImage: "" },
       ],
@@ -36,16 +37,12 @@ export default function FormEdit() {
 
   const deleteQuestionFunc = (data) => {
     if (questions.length > 1) {
-      setQuestions((prev) => {
-        const newVar = [...prev]
-        newVar.splice(data, 1)
-        console.log(newVar)
-        return [...newVar]
+      let qs = [...questions]
+      setQuestions(prev =>{
+        qs.splice(data, 1)
+        prev = [...qs]
+        return prev;
       })
-      // setQuestions([])
-      // questions.forEach((ques, i) => {
-      //   if (i !== data) setQuestions((prev) => [...prev, ques])
-      // })
     }
   }
 
@@ -77,16 +74,18 @@ export default function FormEdit() {
   }
 
   const publishForm = async () => {
-    // const res = await axios.post("/api/forms/create", {
-    //   name: formTitle,
-    //   createdBy: researcherName,
-    //   description: formDesc,
-    //   questions : questions
-    // })
-    // console.log("form publish")
-    // console.log(res.data)
+    console.log(questions)
+    setQuestionTrigger(true)
+    const res = await axios.post("/api/forms/create", {
+      name: formTitle,
+      createdBy: researcherName,
+      description: formDesc,
+      questions : questions
+    })
+    console.log("form publish")
+    console.log(res.data)
     // console.log(`http://localhost:3000/${res.data._id}`)
-    setFormLink("http://localhost:3000/")
+    setFormLink(`http://localhost:3000/form/${res.data._id}`)
     setAlertOpen(true)
   }
 
@@ -162,13 +161,14 @@ export default function FormEdit() {
       <hr />
 
       {questions.map((question, i) => (
-        <div key={i}>
+        <div key={i} style={{padding:".5rem 0px"}}>
           <Accordian
             question={question}
             index={i}
             addQuestionCallback={newQuestionFunc}
             deleteQuestionCallback={deleteQuestionFunc}
             questionCallback={questionCallback}
+            questionTrigger={questionTrigger}
           />
         </div>
       ))}

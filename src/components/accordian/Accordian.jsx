@@ -1,15 +1,16 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import "./accordian.css"
 import { styled } from "@mui/material/styles"
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp"
-import { AddCircleOutline, CropOriginalOutlined, OndemandVideoOutlined, Radio, TextFieldsOutlined } from "@mui/icons-material"
-import CheckBoxIcon from "@mui/icons-material/CheckBox"
-import ShortTextIcon from "@mui/icons-material/ShortText"
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined"
+import { AddCircleOutline } from "@mui/icons-material"
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined"
 import CloseIcon from "@mui/icons-material/Close"
 import MuiAccordion from "@mui/material/Accordion"
 import MuiAccordionSummary from "@mui/material/AccordionSummary"
 import MuiAccordionDetails from "@mui/material/AccordionDetails"
 import Typography from "@mui/material/Typography"
+import ShortTextIcon from "@mui/icons-material/ShortText"
 import { Button, IconButton, MenuItem, Select, Switch } from "@mui/material"
 
 const Accordion = styled((props) => (
@@ -125,6 +126,13 @@ export default function Accordian(props) {
     setIsPrimary(event.target.checked)
   }
 
+  useEffect(() => {
+    setInterval(() => {
+      questionSubmit()
+    }, 1000);
+  }, [])
+  
+
   return (
     <div>
       <Accordion
@@ -186,58 +194,91 @@ export default function Accordian(props) {
                   {/* <Radio style={{ marginRight: "10px" }} /> */}
                   Single Choice
                 </MenuItem>
+                <MenuItem
+                  id="text"
+                  value="text"
+                  onClick={() => {
+                    addQuestionType("text")
+                  }}
+                >
+                  {/* <Radio style={{ marginRight: "10px" }} /> */}
+                  Short Answer
+                </MenuItem>
               </Select>
             </div>
 
             <div className="question_options">
               {options.map((option, j) => (
                 <div className="add_question_body" key={j} ref={optionRef}>
-                  <>
-                    <input
-                      type={questionType}
-                      style={{ marginRight: "10px" }}
-                      name="question_option"
-                      onChange={() => {
-                        handleAnswerChange(j)
-                      }}
-                    />
-                  </>
+                  {questionType != "text" ? (
+                    <>
+                      <input
+                        type={questionType}
+                        style={{ marginRight: "10px" }}
+                        name="question_option"
+                        onChange={() => {
+                          handleAnswerChange(j)
+                        }}
+                        disabled
+                      />
 
-                  <div style={{width:"70%"}}>
-                    <input
-                      type="text"
-                      className="text_input"
-                      placeholder={option.optionText}
-                      required
-                      onChange={(e) =>
-                        // setQuestion((prev) => {
-                        //   //console.log(prev)
-                        //   prev.options[j].optionText = e.target.value
-                        //   return prev
-                        // })
-                        setOptions((prev) => {
-                          prev[j].optionText = e.target.value
-                          return prev
-                        })
-                      }
-                    />
-                  </div>
-                  {/* <CropOriginalOutlined style={{ color: "#5f6368" }} /> */}
-                  <Button
-                    size="small"
-                    onClick={() => {
-                      addOption(props.index)
-                    }}
-                  >
-                    {" "}
-                    Add option
-                  </Button>
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => removeOption(j)}
-                  >
-                    <CloseIcon />
-                  </IconButton>
+                      <div style={{ width: "70%" }}>
+                        <input
+                          type="text"
+                          className="text_input"
+                          placeholder={option.optionText}
+                          required
+                          onChange={(e) =>
+                            // setQuestion((prev) => {
+                            //   //console.log(prev)
+                            //   prev.options[j].optionText = e.target.value
+                            //   return prev
+                            // })
+                            setOptions((prev) => {
+                              prev[j].optionText = e.target.value
+                              return prev
+                            })
+                          }
+                        />
+                      </div>
+
+                      {/* <CropOriginalOutlined style={{ color: "#5f6368" }} /> */}
+                      <IconButton
+                        aria-label="addOption"
+                        onClick={() => {
+                          addOption(props.index)
+                        }}
+                      >
+                        <AddOutlinedIcon />
+                      </IconButton>
+                      {/* <Button
+                        size="small"
+                        onClick={() => {
+                          addOption(props.index)
+                        }}
+                      >
+                        {" "}
+                        Add option
+                      </Button> */}
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => removeOption(j)}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <ShortTextIcon style={{ marginRight: "10px" }} />
+                      <div style={{ width: "70%" }}>
+                        <input
+                          type="text"
+                          className="question"
+                          placeholder={option.optionText}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
@@ -253,19 +294,17 @@ export default function Accordian(props) {
               }}
             />
             <div className="question_edit">
-              <AddCircleOutline className="edit" />
-              <OndemandVideoOutlined className="edit" />
+              <AddCircleOutline
+                className="edit"
+                onClick={props.addQuestionCallback}
+              />
+              <DeleteOutlinedIcon className="edit" onClick={() => {
+                props.deleteQuestionCallback(props.index)
+              } } />
               {/* <CropOriginalOutlined className="edit" />
               <TextFieldsOutlined className="edit" /> */}
             </div>
           </AccordionDetails>
-          <div className="accordian_button">
-            <Button variant="outlined"> Reset</Button>
-            <Button variant="outlined" onClick={questionSubmit}>
-              {" "}
-              Done{" "}
-            </Button>
-          </div>
         </form>
       </Accordion>
     </div>

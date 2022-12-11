@@ -1,35 +1,17 @@
 import React, { useEffect } from "react"
-import { Checkbox, Grid, TextField } from "@mui/material"
+import {  Grid, TextField } from "@mui/material"
 import { Paper, Typography } from "@mui/material"
 import "./formview.css"
-// import formService from "../../services/formService"
-import CircularProgress from "@mui/material/CircularProgress"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import Radio from "@mui/material/Radio"
-import AppBar from "@mui/material/AppBar"
-import Toolbar from "@mui/material/Toolbar"
 import Button from "@mui/material/Button"
-import IconButton from "@mui/material/IconButton"
-import MenuIcon from "@mui/icons-material/Menu"
 import RadioGroup from "@mui/material/RadioGroup"
 import Divider from "@mui/material/Divider"
-import Container from "@mui/material/Container"
 import axios from "axios"
 import { useParams } from "react-router-dom"
-import { CheckBox } from "@mui/icons-material"
 
-function FormView(props) {
-  // const [userId, setUserId] = React.useState("")
+function FormView() {
   const [formData, setFormData] = React.useState()
   const [user,setUser] = React.useState("")
-  const [responseData, setResponseData] = React.useState([])
   const answerOption = React.useRef()
-  
-
-  // const [optionValue, setOptionValue] = React.useState([])
-  // const [isSubmitted, setIsSubmitted] = React.useState(false)
-
-  // const [questions, setQuestions] = React.useState([])
   const [value, setValue] = React.useState("")
 
   const { formId } = useParams()
@@ -42,6 +24,7 @@ function FormView(props) {
   useEffect(() => {
     getFormData()
     // console.log(formData.questions)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const submitResponse = () => {
@@ -245,13 +228,3 @@ function FormView(props) {
 
 export default FormView
 
-const FormControlLabelWrapper = (props) => {
-  const { radioButton, ...labelProps } = props
-  return (
-    <FormControlLabel
-      control={<Radio />}
-      label={"Radio " + props.value + props.jIndex}
-      {...labelProps}
-    />
-  )
-}

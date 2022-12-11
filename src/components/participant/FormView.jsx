@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import {  Grid, TextField } from "@mui/material"
+import { Grid, TextField } from "@mui/material"
 import { Paper, Typography } from "@mui/material"
 import "./formview.css"
 import Button from "@mui/material/Button"
@@ -7,28 +7,50 @@ import RadioGroup from "@mui/material/RadioGroup"
 import Divider from "@mui/material/Divider"
 import axios from "axios"
 import { useParams } from "react-router-dom"
+import QuestionView from "../questionView/QuestionView"
+import { SettingsApplications } from "@mui/icons-material"
 
 function FormView() {
   const [formData, setFormData] = React.useState()
-  const [user,setUser] = React.useState("")
-  const answerOption = React.useRef()
-  const [value, setValue] = React.useState("")
+  const [user, setUser] = React.useState("")
+  const [attempted, setAttempted] = React.useState(false)
+  const [response, setResponse] = React.useState([])
 
   const { formId } = useParams()
   const getFormData = async () => {
     const res = await axios.get(`/api/forms/${formId}`)
     setFormData(res.data)
-    console.log(res.data)
   }
 
   useEffect(() => {
     getFormData()
     // console.log(formData.questions)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  // const questions = formData.questions;
 
-  const submitResponse = () => {
-     
+  const saveResponse = (response, i) => {
+    setResponse(prev => {
+      const obj = { ...formData.questions[i], response }
+      if (prev.length >0)
+        prev[i] = obj
+      else
+        prev.push(obj)
+      return prev;
+    })
+  }
+  const submitResponse = async() => {
+    const formObj = {
+      submittedBy: user,
+      formId: formId,
+      questions:response
+    }
+
+    console.log(formObj)
+
+    const res = await axios.post("/api/response/create", formObj)
+    console.log(res.data)
+    setAttempted(true)
   }
 
   return (
@@ -85,7 +107,7 @@ function FormView() {
               </div>
             </Grid>
 
-            {2 < 3 ? (
+            {!attempted? (
               <div>
                 <Grid>
                   {/* { questions.map((ques, i)=>(
@@ -97,91 +119,7 @@ function FormView() {
                     <Paper>
                       {formData?.questions.map((question, i) => (
                         <div key={i}>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "flex-start",
-                              marginLeft: "6px",
-                              paddingTop: "15px",
-                              paddingBottom: "15px",
-                            }}
-                          >
-                            <Typography
-                              variant="subtitle1"
-                              style={{ marginLeft: "10px" }}
-                            >
-                              {i + 1}. {question.questionText}
-                            </Typography>
-
-                            <div>
-                              <RadioGroup
-                                aria-label="quiz"
-                                name="quiz"
-                                value={value}
-                                // onChange={(e) => {
-                                //   handleRadioChange(e.target.value, 1)
-                                // }}
-                              >
-                                {/* {ques.options.map((op, j) => (
-                                  
-                                ))} */}
-
-                                <div>
-                                  {question.options.map((option, j) => (
-                                    <div
-                                      key={j}
-                                      style={{
-                                        display: "flex",
-                                        marginLeft: "7px",
-                                      }}
-                                      ref={answerOption}
-                                    >
-                                      {/* <FormControlLabel
-                                        value={j}
-                                        control={question.questionType==="radio" ? <Radio /> : <CheckBox />}
-                                        label={option.optionText}
-                                      /> */}
-                                      <div className="optionWrapper">
-                                        <input
-                                          value={j}
-                                          type={question.questionType}
-                                          style={{
-                                            marginRight: "10px",
-                                            padding: "0.3rem 0px",
-                                          }}
-                                          name={`question_option${i}`}
-                                          onChange={() => {
-                                            // handleAnswerChange(j)
-                                          }}
-                                        />
-                                        <div style={{ fontSize: "1 rem" }}>
-                                          {option.optionText}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))}
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      marginLeft: "10px",
-                                    }}
-                                  >
-                                    {/* {op.optionImage !== "" ? (
-                                      <img
-                                        src={op.optionImage}
-                                        width="64%"
-                                        height="auto"
-                                      />
-                                    ) : (
-                                      ""
-                                    )} */}
-                                    <Divider />
-                                  </div>
-                                </div>
-                              </RadioGroup>
-                            </div>
-                          </div>
+                          <QuestionView question = {question} index = {i} saveResponseCallback={saveResponse} />
                         </div>
                       ))}
                     </Paper>
@@ -227,4 +165,3 @@ function FormView() {
 }
 
 export default FormView
-

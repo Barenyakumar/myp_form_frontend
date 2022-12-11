@@ -12,7 +12,14 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails"
 import Typography from "@mui/material/Typography"
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import ShortTextIcon from "@mui/icons-material/ShortText"
-import { Button, IconButton, MenuItem, Select, Switch, Tooltip } from "@mui/material"
+import {
+  Button,
+  IconButton,
+  MenuItem,
+  Select,
+  Switch,
+  Tooltip,
+} from "@mui/material"
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -63,24 +70,24 @@ export default function Accordian(props) {
     setExpanded(newExpanded ? panel : false)
   }
 
- async function removeOption(j) {
-   if (options.length > 1) {
-     const ops = [...options]
-     setOptions(prev => {
-       ops.splice(j, 1)
-       prev = [...ops]
-       return prev;
-     })
-     setQuestion((prev) => {
-       prev.options = options
-       prev.answer = answer
-       prev.isPrimary = isPrimary
-       return prev
-     })
+  async function removeOption(j) {
+    if (options.length > 1) {
+      const ops = [...options]
+      setOptions((prev) => {
+        ops.splice(j, 1)
+        prev = [...ops]
+        return prev
+      })
+      setQuestion((prev) => {
+        prev.options = options
+        prev.answer = answer
+        prev.isPrimary = isPrimary
+        return prev
+      })
       props.questionCallback(props.index, question)
-     //  setQuestions(removeOptionQuestions)
-   }
- }
+      //  setQuestions(removeOptionQuestions)
+    }
+  }
 
   function addOption() {
     if (options.length < 5) {
@@ -111,18 +118,33 @@ export default function Accordian(props) {
     // setQuestion(qs)
   }
 
-  const optionRef = useRef()
-
   var handleAnswerChange = (j) => {
     if (questionType === "radio") {
+      setAnswer([j])
+    } else {
       setAnswer((prev) => {
-        prev[0] = j
+        if (!prev.includes(j)) prev = [...prev, j]
+        else {
+          const newRes = [...prev]
+          newRes.splice(newRes.indexOf(j), 1)
+          prev = [...newRes]
+        }
+
         return prev
       })
-    } else {
-      setAnswer((prev) => [...prev, j])
     }
-    optionRef.current.backgroundColor = "green"
+  }
+
+  function changeAnsColor(ind) {
+    if (questionType !== "text")
+      options?.forEach((op, i) => {
+        if (ind.includes(i))
+          document.getElementById(`optionbody_${i + 1}`).style.background =
+            "#7ce3b58a"
+        else
+          document.getElementById(`optionbody_${i + 1}`).style.background =
+            "white"
+      })
   }
   //console.log(answer)
 
@@ -141,11 +163,10 @@ export default function Accordian(props) {
     setIsPrimary(event.target.checked)
   }
 
-  // useEffect(() => {
-  //     questionSubmit()
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [props.questionTrigger])
-  
+  useEffect(() => {
+    changeAnsColor(answer)
+    console.log(answer)
+  }, [answer])
 
   return (
     <div>
@@ -238,7 +259,11 @@ export default function Accordian(props) {
 
             <div className="question_options">
               {options.map((option, j) => (
-                <div className="add_question_body" key={j} ref={optionRef}>
+                <div
+                  className="add_question_body"
+                  key={j}
+                  id={`optionbody_${j + 1}`}
+                >
                   {questionType != "text" ? (
                     <>
                       <input
@@ -248,7 +273,6 @@ export default function Accordian(props) {
                         onChange={() => {
                           handleAnswerChange(j)
                         }}
-                        disabled
                       />
 
                       <div style={{ width: "70%" }}>
@@ -267,8 +291,7 @@ export default function Accordian(props) {
                               return prev
                             })
                             props.questionCallback(props.index, question)
-                          }
-                          }
+                          }}
                         />
                       </div>
 

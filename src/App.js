@@ -3,6 +3,7 @@ import { BrowserRouter as Router, useRoutes } from "react-router-dom"
 import FormEdit from "./components/researcher/FormEdit"
 import FormView from "./components/participant/FormView"
 import ViewResponse from "./components/viewResponses/ViewResponse"
+import Home from "./components/Home/Home"
 // import FormEdit from "./components/researcher/FormEdit"
 
 function App() {
@@ -10,6 +11,10 @@ function App() {
     const routes = useRoutes([
       {
         path: "/",
+        element: <Home/>
+      },
+      {
+        path: "/forms",
         element: <FormEdit/>
       },
 
@@ -18,7 +23,7 @@ function App() {
         element: <FormView />,
       },
       {
-        path: "/response",
+        path: "/response/:email",
         element: <ViewResponse />,
       },
     ])

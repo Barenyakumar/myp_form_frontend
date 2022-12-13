@@ -30,20 +30,21 @@ function FormView() {
   // const questions = formData.questions;
 
   const saveResponse = (response, i) => {
-    setResponse(prev => {
+    setResponse((prev) => {
       const obj = { ...formData.questions[i], response }
-      if (prev.length >0)
-        prev[i] = obj
-      else
-        prev.push(obj)
-      return prev;
+      console.log(obj)
+      if (prev.length > 0) prev[i] = obj
+      else prev.push(obj)
+      return prev
     })
   }
-  const submitResponse = async() => {
+  const submitResponse = async (e) => {
+    e.preventDefault()
     const formObj = {
       submittedBy: user,
       formId: formId,
-      questions:response
+      createdBy: formData.createdBy,
+      questions: response,
     }
 
     console.log(formObj)
@@ -54,9 +55,10 @@ function FormView() {
   }
 
   return (
-    <div
+    <form
       className="formview_section"
       style={{ minHeight: "80vh", marginTop: "2rem" }}
+      onSubmit={submitResponse}
     >
       <div style={{ width: "80%" }}>
         <Grid container direction="column" justify="center" alignItems="center">
@@ -93,13 +95,14 @@ function FormView() {
                       <Typography variant="subtitle1">
                         {formData?.description}
                       </Typography>
-                      <TextField
-                        id="outlined-basic"
-                        label="Enter your name"
-                        variant="outlined"
+                      <input
+                        type="email"
+                        className="question_form_top_desc"
+                        placeholder="Enter your email"
                         onChange={(e) => {
                           setUser(e.target.value)
                         }}
+                        required
                       />
                     </div>
                   </Paper>
@@ -107,7 +110,7 @@ function FormView() {
               </div>
             </Grid>
 
-            {!attempted? (
+            {!attempted ? (
               <div>
                 <Grid>
                   {/* { questions.map((ques, i)=>(
@@ -119,7 +122,11 @@ function FormView() {
                     <Paper>
                       {formData?.questions.map((question, i) => (
                         <div key={i}>
-                          <QuestionView question = {question} index = {i} saveResponseCallback={saveResponse} />
+                          <QuestionView
+                            question={question}
+                            index={i}
+                            saveResponseCallback={saveResponse}
+                          />
                         </div>
                       ))}
                     </Paper>
@@ -128,11 +135,7 @@ function FormView() {
                 <Grid>
                   <br></br>
                   <div style={{ display: "flex" }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={submitResponse}
-                    >
+                    <Button variant="contained" color="primary" type="submit">
                       Submit
                     </Button>
                   </div>
@@ -160,7 +163,7 @@ function FormView() {
 
         {/* //TODO: Add a footer here */}
       </div>
-    </div>
+    </form>
   )
 }
 

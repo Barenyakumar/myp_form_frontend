@@ -179,7 +179,6 @@ export default function Accordian(props) {
             {question.questionText.substring(0, 30) + "..."}
           </Typography>
         </AccordionSummary>
-        <form>
           <AccordionDetails>
             <div className="add_question_top">
               <input
@@ -264,7 +263,7 @@ export default function Accordian(props) {
                   key={j}
                   id={`optionbody_${j + 1}`}
                 >
-                  {questionType != "text" ? (
+                  {questionType !== "text" ? (
                     <>
                       <input
                         type={questionType}
@@ -352,7 +351,6 @@ export default function Accordian(props) {
               </Tooltip>
             </div>
           </AccordionDetails>
-        </form>
       </Accordion>
     </div>
   )

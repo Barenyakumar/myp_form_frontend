@@ -73,8 +73,9 @@ export default function FormEdit() {
     })
   }
 
-  const publishForm = async () => {
-    console.log(questions)
+  const publishForm = async (e) => {
+    e.preventDefault()
+    console.log("hhii")
     setQuestionTrigger(true)
     const res = await axios.post("/api/forms/create", {
       name: formTitle,
@@ -92,7 +93,7 @@ export default function FormEdit() {
 
 
   return (
-    <div className="section">
+    <form className="section" onSubmit={publishForm}>
       <Collapse in={alertOpen}>
         <Alert
           action={
@@ -113,7 +114,7 @@ export default function FormEdit() {
             style={{
               display: "flex",
               alignItems: "center",
-              width:"100%",
+              width: "100%",
               justifyContent: "space-around",
             }}
           >
@@ -140,6 +141,7 @@ export default function FormEdit() {
             onChange={(e) => {
               setFormTitle(e.target.value)
             }}
+            required
           />
           <input
             type="text"
@@ -148,14 +150,16 @@ export default function FormEdit() {
             onChange={(e) => {
               setFormDesc(e.target.value)
             }}
+            required
           />
           <input
-            type="text"
+            type="email"
             className="question_form_top_desc"
-            placeholder="Researcher name"
+            placeholder="Researcher Email"
             onChange={(e) => {
               setResearcherName(e.target.value)
             }}
+            required
           />
         </div>
       </div>
@@ -163,7 +167,7 @@ export default function FormEdit() {
       <hr />
 
       {questions.map((question, i) => (
-        <div key={i} style={{padding:".5rem 0px"}}>
+        <div key={i} style={{ padding: ".5rem 0px" }}>
           <Accordian
             question={question}
             index={i}
@@ -174,9 +178,9 @@ export default function FormEdit() {
           />
         </div>
       ))}
-      <Button variant="outlined" onClick={publishForm}>
+      <Button variant="outlined" type="submit">
         Publish
       </Button>
-    </div>
+    </form>
   )
 }

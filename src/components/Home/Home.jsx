@@ -18,6 +18,7 @@ import MoreIcon from "@mui/icons-material/MoreVert"
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined"
 import "./home.css"
 import { Link } from "react-router-dom"
+import axios from "axios"
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -60,8 +61,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }))
 
 export default function Home() {
+  const [formData, setFormData] = React.useState([])
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+  // const [email, setEmail] = React.useState("")
 
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
@@ -156,6 +159,20 @@ export default function Home() {
       </MenuItem>
     </Menu>
   )
+  const getFormData = async (email) => {
+    console.log(email)
+    try {
+      const res = await axios.get(`/api/forms/${email}`)
+      setFormData(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  
+  React.useEffect(() => {
+    const email = prompt("Enter your email:");
+    getFormData(email);
+  }, [])
 
   return (
     <div className="home_container">
@@ -243,6 +260,17 @@ export default function Home() {
           <PostAddOutlinedIcon sx={{ height: "5rem", width: "5rem" }} />
         </div>
       </Link>
+      <Box sx={{ flexGrow: 1 }}>
+        {formData?.map((form) => (
+          <Link  to={`/form/${form._id}`} key={form._id}>
+            <Box>
+              {form.name}
+              {"\n"}
+              {form.description}
+            </Box>
+          </Link>
+        ))}
+      </Box>
     </div>
   )
 }

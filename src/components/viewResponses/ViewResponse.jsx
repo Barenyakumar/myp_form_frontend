@@ -9,6 +9,10 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails"
 import Typography from "@mui/material/Typography"
 import { Button } from '@mui/material'
 import { useParams } from 'react-router-dom'
+import Box from "@mui/material/Box"
+import { DataGrid } from "@mui/x-data-grid"
+
+
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -47,7 +51,13 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }))
 
 function ViewResponse() {
-  const converter = 
+  
+  const converter = require("json-2-csv")
+  
+
+  // read JSON from a file
+  // const todos = JSON.parse(fs.readFileSync("todos.json"))
+
   const [expanded, setExpanded] = React.useState("panel1")
 
   const handleChange = (panel) => (event, newExpanded) => {
@@ -55,24 +65,45 @@ function ViewResponse() {
   }
 
   // const [question, setQuestion] = useState()
-  const [responses, setResponses] = useState()
-  const {email} = useParams()
+  const [responses, setResponses] = useState([])
+  const [userResponseArray, setUserResponseArray] = useState([])
+  const { email } = useParams()
+  
+
   async function getAllRes() {
     
-    const res = await axios.get(`/api/response/${email}`);
+    const res = await axios.get(`/api/forms/${email}`);
     setResponses(res.data)
     console.log(res.data)
+    res.data.forEach(async userResp => {
+      const resp = await axios.get(`/api/response/${email}`)
+      setUserResponseArray(prev => {
+        prev.push(resp.data);
+        return prev;
+      })
+    })
   }
   // async function getAllQues() {
   //   const 
   // }
   useEffect(() => {
     getAllRes()
+    console.log(userResponseArray)
   }, [])
 
   const convert_to_csv_func = async (id) => {
-    const resp = await axios.get(`/api/response`)
+    const resp = await axios.get(`/api/response/${email}`)
+    // console.log("hi")
+    converter.json2csv(resp.data, (err, csv) => {
+      if (err) {
+        throw err
+      }
+
+      // print CSV string
+      console.log(csv)
+    })
   }
+
   
   return (
     <div>
@@ -87,31 +118,23 @@ function ViewResponse() {
               id="panel1d-header"
             >
               <Typography>
-                {i + 1} {res.submittedBy}
+                {i + 1} {res.name}
+              </Typography>{" "}||{" "}
+              <Typography>
+                {i + 1} {res.description}
               </Typography>
-              <Button onclick={() => {
-                convert_to_csv_func(res._id)
-              }} >Download to csv</Button>
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
                 <div className="question_options">
-                  {res.questions.map((ques, j) => (
-                    <div
-                      className="add_question_body"
-                      key={j}
-                      id={`optionbody_${j + 1}`}
-                    >
-                      {j + 1} {ques.questionText}
-                      <div>
-                        {ques.response.map((res, k) => (
-                          <div className="response_options" key={k}>
-                             {res}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+                  submitted by : {res.submittedBy}
+                  <Box sx={{ height: 520, width: "100%" }}>
+                    <DataGrid
+                      rows={res.questions}
+                      columns={columns}
+                      getRowId={(row) => row._id}
+                    />
+                  </Box>
                 </div>
               </Typography>
             </AccordionDetails>
@@ -121,5 +144,52 @@ function ViewResponse() {
     </div>
   )
 }
+
+
+var columns = [
+  { field: "_id", headerName: "ID", width: 90 },
+  {
+    field: "questionText",
+    headerName: "Question",
+    width: 150,
+    editable: true,
+  },
+  {
+    field: "questionType",
+    headerName: "Question Type",
+    width: 150,
+    editable: true,
+  },
+  {
+    field: "response",
+    headerName: "Response",
+    width: 110,
+    editable: true,
+  },
+  {
+    field: "isPrimary",
+    headerName: "Primary",
+    width: 110,
+    editable: true,
+  },
+  {
+    field: "submittedBy",
+    headerName: "Created By",
+    description: "This response is submitted by",
+    width: 160,
+  },
+]
+
+var rows = [
+  { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
+  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
+  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
+  { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
+  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
+  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
+  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
+  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
+  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
+]
 
 export default ViewResponse

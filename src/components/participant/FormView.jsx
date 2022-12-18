@@ -8,7 +8,8 @@ import Divider from "@mui/material/Divider"
 import axios from "axios"
 import { useParams } from "react-router-dom"
 import QuestionView from "../questionView/QuestionView"
-import { SettingsApplications } from "@mui/icons-material"
+
+
 
 function FormView() {
   const [formData, setFormData] = React.useState()
@@ -18,12 +19,13 @@ function FormView() {
 
   const { formId } = useParams()
   const getFormData = async () => {
-    const res = await axios.get(`/api/forms/${formId}`)
-    setFormData(res.data)
+    const res = await axios.get(`/api/form/${formId}`)
+    await setFormData(res.data)
+    console.log(res.data)
   }
 
   useEffect(() => {
-    getFormData()
+     getFormData()
     // console.log(formData.questions)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -120,7 +122,7 @@ function FormView() {
                   <div>
                     <br></br>
                     <Paper>
-                      {formData?.questions.map((question, i) => (
+                      {formData?.questions?.map((question, i) => (
                         <div key={i}>
                           <QuestionView
                             question={question}
@@ -164,6 +166,7 @@ function FormView() {
         {/* //TODO: Add a footer here */}
       </div>
     </form>
+    // <h1>hii</h1>
   )
 }
 

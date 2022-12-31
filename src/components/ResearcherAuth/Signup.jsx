@@ -252,15 +252,17 @@ function UserDetails(props) {
         gender: gender.current.value,
       }
       try {
-        const res = await axios.post("/api/participant/register", obj)
-        console.log(res.data)
+        const res = await axios.post("/api/researcher/register", obj)
+        // console.log(res.data)
 
         localStorage.setItem("ed_pr_bk_gj_12_35", JSON.stringify(res.data))
         dispatch({ type: "LOGIN_SUCCESS", payload: res.data })
-        console.log(user)
-      } catch (error) {
+        console.log("user: ")
+        console.log(user);
+      } catch (err) {
         // setPreloader(false)
-        console.log(error)
+        console.log(err)
+        console.log("error: " + error)
         props.setErr(true)
         if (error.response.data.code === 11000) {
           props.setErrMessage(

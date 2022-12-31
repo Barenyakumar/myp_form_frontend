@@ -1,0 +1,25 @@
+.loginHolder{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.loginResearcher{
+  text-decoration: none;
+  color: #ffff;
+  background-color: rgb(1, 35, 35);
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.loginParticipant{
+  text-decoration: none;
+  color: #ffff;
+  background-color: rgb(1, 35, 35);
+  padding: 1rem;
+  border-radius: 5px;
+}

@@ -1,9 +1,10 @@
-import { createContext } from "react"
-import { useReducer } from "react"
+
+import { createContext, useReducer } from "react"
 import AuthReducer from "./AuthReducer"
 
 const INITIAL_STATE = {
   user: JSON.parse(localStorage.getItem("ed_pr_bk_gj_12_35")),
+  // user: null,
   // user: {
   //     _id:"62af66a1325dcc4be0ba905d",
   //     name:"Ayush Kuamr",

@@ -19,6 +19,7 @@ import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined"
 import "./home.css"
 import { Link } from "react-router-dom"
 import axios from "axios"
+import { AuthContext } from "../../context/AuthContext"
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -65,7 +66,7 @@ export default function Home() {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
   // const [email, setEmail] = React.useState("")
-
+  const { user, isFetching, error, dispatch }  = React.useContext(AuthContext)
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
@@ -170,8 +171,9 @@ export default function Home() {
   }
   
   React.useEffect(() => {
-    const email = prompt("Enter your email:");
-    getFormData(email);
+
+    getFormData(user.email);
+    console.log(user)
   }, [])
 
   return (
@@ -194,7 +196,7 @@ export default function Home() {
               component="div"
               sx={{ display: { xs: "none", sm: "block" } }}
             >
-              MUI
+              MyParticipant
             </Typography>
             <Search>
               <SearchIconWrapper>
@@ -215,16 +217,18 @@ export default function Home() {
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
             </IconButton> */}
+            <IconButton
+              size="small"
+              aria-label="show 17 new notifications"
+                color="inherit"
+                onClick={() => {
+                  localStorage.setItem("ed_pr_bk_gj_12_35", null)
+                  dispatch({ type: "LOG_OUT", payload:null })
+                }}
+              >
+                Log Out
+            </IconButton>
               <IconButton
                 size="large"
                 edge="end"
